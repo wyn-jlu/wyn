@@ -1,0 +1,9 @@
+在已经添加了密钥，可以pull代码的情况下出现无法push的情况。
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+可能是因为~/.ssh文件下有多个rsa密钥，导致权限验证的时候密钥识别错误。
+可以添加config文件指定密钥。
+解决方案来源：https://juejin.cn/post/7114938626328248327/

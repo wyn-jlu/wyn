@@ -85,13 +85,20 @@ static void sysbeep(void);
 #define RESPONSE "\033[?1;2c"
 
 /* NOTE! gotoxy thinks x==video_num_columns is ok */
+/**
+* Data: 23.9.17
+* Description: 光标的行和列以及内存指针
+* Input：
+* Output：
+* Other：关键字 incline，定义为内联函数，避免频繁调用函数，不断有函数入栈，对栈空间的大量消耗
+*/
 static inline void gotoxy(unsigned int new_x,unsigned int new_y)
 {
 	if (new_x > video_num_columns || new_y >= video_num_lines)
 		return;
 	x=new_x;
 	y=new_y;
-	pos=origin + y*video_size_row + (x<<1);
+	pos=origin + y*video_size_row + (x<<1);/* 内存指针，在此处写数据 */
 }
 
 static inline void set_origin(void)
@@ -200,7 +207,7 @@ static void scrdown(void)
 			:"ax","cx","di","si");
 	}
 }
-
+/* 光标下移一行 */
 static void lf(void)
 {
 	if (y+1<bottom) {
@@ -220,7 +227,7 @@ static void ri(void)
 	}
 	scrdown();
 }
-
+/* 光标回到第一列 */
 static void cr(void)
 {
 	pos -= x<<1;

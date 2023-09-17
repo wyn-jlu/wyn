@@ -60,6 +60,14 @@ static unsigned char mem_map [ PAGING_PAGES ] = {0,};
  * Get physical address of first (actually last :-) free page, and mark it
  * used. If no free pages left, return 0.
  */
+
+/**
+* Data: 23.9.17
+* Description: 申请空闲内存页
+* Input: 无
+* Output: 返回物理内存页地址的起始地址
+* Other: 内联汇编代码，有待于学习
+*/
 unsigned long get_free_page(void)
 {
 register unsigned long __res asm("ax");

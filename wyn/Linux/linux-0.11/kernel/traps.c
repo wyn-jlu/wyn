@@ -178,11 +178,18 @@ void do_reserved(long esp, long error_code)
 	die("reserved (15,17-47) error",esp,error_code);
 }
 
+/**
+* Data: 23.9.17
+* Description: 设置中断号和中断处理程序
+* Input: 无
+* Output: 无
+* Other: 
+*/
 void trap_init(void)
 {
 	int i;
 
-	set_trap_gate(0,&divide_error);
+	set_trap_gate(0,&divide_error);/* trap和system的中断描述符的特权级不同，trap为内核态0，system为用户态3 */
 	set_trap_gate(1,&debug);
 	set_trap_gate(2,&nmi);
 	set_system_gate(3,&int3);	/* int3-5 can be called from all */

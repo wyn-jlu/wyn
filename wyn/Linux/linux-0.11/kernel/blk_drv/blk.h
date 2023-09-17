@@ -24,11 +24,11 @@ struct request {
 	int dev;		/* -1 if no request */
 	int cmd;		/* READ or WRITE */
 	int errors;
-	unsigned long sector;
-	unsigned long nr_sectors;
+	unsigned long sector;		/* 起始扇区 */
+	unsigned long nr_sectors;		/* 扇区数 */
 	char * buffer;
-	struct task_struct * waiting;
-	struct buffer_head * bh;
+	struct task_struct * waiting;		/* 表示一个进程 */
+	struct buffer_head * bh;		/* 缓冲区头指针 */
 	struct request * next;
 };
 

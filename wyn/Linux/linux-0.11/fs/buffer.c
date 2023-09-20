@@ -347,14 +347,15 @@ struct buffer_head * breada(int dev,int first, ...)
 
 void buffer_init(long buffer_end)
 {
-	struct buffer_head * h = start_buffer;
-	void * b;
+	struct buffer_head * h = start_buffer;/* 缓冲头 */
+	void * b;/* 缓冲块 */
 	int i;
 
 	if (buffer_end == 1<<20)
 		b = (void *) (640*1024);
 	else
 		b = (void *) buffer_end;
+	/* 建立双向链表 */
 	while ( (b -= BLOCK_SIZE) >= ((void *) (h+1)) ) {
 		h->b_dev = 0;
 		h->b_dirt = 0;
@@ -373,7 +374,7 @@ void buffer_init(long buffer_end)
 			b = (void *) 0xA0000;
 	}
 	h--;
-	free_list = start_buffer;
+	free_list = start_buffer;/* 指向缓冲头双向链表的第一个结构 */
 	free_list->b_prev_free = h;
 	h->b_next_free = free_list;
 	for (i=0;i<NR_HASH;i++)

@@ -176,7 +176,7 @@ static int win_result(void)
 	if (i&1) i=inb(HD_ERROR);
 	return (1);
 }
-
+/* 扇区选择，数据地址，读写指令cmd */
 static void hd_out(unsigned int drive,unsigned int nsect,unsigned int sect,
 		unsigned int head,unsigned int cyl,unsigned int cmd,
 		void (*intr_addr)(void))
@@ -344,6 +344,6 @@ void hd_init(void)
 {
 	blk_dev[MAJOR_NR].request_fn = DEVICE_REQUEST;
 	set_intr_gate(0x2E,&hd_interrupt);
-	outb_p(inb_p(0x21)&0xfb,0x21);
+	outb_p(inb_p(0x21)&0xfb,0x21);/* IO端口读写吗，允许硬盘发送中断信号 */
 	outb(inb_p(0xA1)&0xbf,0xA1);
 }

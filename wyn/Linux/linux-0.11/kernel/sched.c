@@ -389,9 +389,10 @@ void sched_init(void)
 
 	if (sizeof(struct sigaction) != 16)
 		panic("Struct sigaction MUST be 16 bytes");
-	set_tss_desc(gdt+FIRST_TSS_ENTRY,&(init_task.task.tss));
-	set_ldt_desc(gdt+FIRST_LDT_ENTRY,&(init_task.task.ldt));
+	set_tss_desc(gdt+FIRST_TSS_ENTRY,&(init_task.task.tss));/* 任务状态段，用于保持和恢复任务状态 */
+	set_ldt_desc(gdt+FIRST_LDT_ENTRY,&(init_task.task.ldt));/* 局部描述符表，用户态，有数据段和代码段 */
 	p = gdt+2+FIRST_TSS_ENTRY;
+	/* 给数组task赋初值；给gdt剩下的位置赋0 */
 	for(i=1;i<NR_TASKS;i++) {
 		task[i] = NULL;
 		p->a=p->b=0;
@@ -401,12 +402,12 @@ void sched_init(void)
 	}
 /* Clear NT, so that we won't have troubles with that later on */
 	__asm__("pushfl ; andl $0xffffbfff,(%esp) ; popfl");
-	ltr(0);
-	lldt(0);
+	ltr(0);/* tss的内存位置 */
+	lldt(0);/* ldt的内存位置 */
 	outb_p(0x36,0x43);		/* binary, mode 3, LSB/MSB, ch 0 */
 	outb_p(LATCH & 0xff , 0x40);	/* LSB */
 	outb(LATCH >> 8 , 0x40);	/* MSB */
-	set_intr_gate(0x20,&timer_interrupt);
+	set_intr_gate(0x20,&timer_interrupt);/* 中断号和中断处理程序 */
 	outb(inb_p(0x21)&~0x01,0x21);
-	set_system_gate(0x80,&system_call);
+	set_system_gate(0x80,&system_call);/* 中断系统调用，用户态程序调用内核 */
 }
